@@ -1,0 +1,140 @@
+* {
+  box-sizing: border-box;
+}
+
+$text-body: #f2f3fc;
+$bg-body: #131e2a;
+$text-primary: #fff8ec;
+$bg-primary: #1f222b;
+$text-secondary: #1e3968;
+$bg-secondary: #f4ead6;
+$text-tertiary: #ed6304;
+$bg-backdrop: rgba(0, 0, 0, 0.5);
+$border-cell: #405881;
+$bg-hit: #2bbd29;
+$bg-miss: #cf1231;
+
+@mixin createGrid($grid-dimension) {
+  .game {
+    display: flex;
+    padding: calc($grid-dimension/11.25);
+    flex-direction: if($grid-dimension > 300, row, column);
+    justify-content: center;
+    align-items: center;
+    gap: calc($grid-dimension/5.625);
+  }
+
+  .grid {
+    display: grid;
+    height: $grid-dimension;
+    width: $grid-dimension;
+    grid-template: repeat(10, 1fr) / repeat(10, 1fr);
+  }
+}
+
+@mixin text-bg($text-color, $bg-color) {
+  color: $text-color;
+  background-color: $bg-color;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  @include text-bg($text-body, $bg-body);
+}
+
+h1,
+h2 {
+  text-align: center;
+}
+
+.text-tertiary {
+  color: $text-tertiary;
+}
+
+@include createGrid(288px);
+
+.computer-grid .cell {
+  cursor: pointer;
+
+  &:hover {
+    @include text-bg($text-secondary, $bg-secondary);
+  }
+}
+
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid $border-cell;
+  border-right: 1px solid $border-cell;
+  @include text-bg($text-primary, $bg-primary);
+
+  &:nth-child(10n + 1) {
+    border-left: 1px solid $border-cell;
+  }
+
+  &[data-row="0"] {
+    border-top: 1px solid $border-cell;
+  }
+
+  &.ship {
+    @include text-bg($text-secondary, $bg-secondary);
+  }
+
+  &.hit,
+  &.hit:hover {
+    background-color: $bg-hit;
+  }
+
+  &.miss,
+  &.miss:hover {
+    background-color: $bg-miss;
+  }
+}
+
+.game-over-modal {
+  width: 80%;
+  max-width: 500px;
+  @include text-bg($text-body, $bg-body);
+  border: none;
+  padding: 38px;
+
+  &::backdrop {
+    background-color: $bg-backdrop;
+  }
+
+  .game-over-message {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .restart-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    @include text-bg($text-primary, $bg-primary);
+    border: 1px solid $border-cell;
+    outline: none;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1.2rem;
+    transition: background-color 0.3s;
+
+    &:hover {
+      @include text-bg($text-secondary, $bg-secondary);
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .game {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 1200px) {
+  @include createGrid(450px);
+}
