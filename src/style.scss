@@ -21,7 +21,11 @@ $bg-miss: #cf1231;
     flex-direction: if($grid-dimension > 300, row, column);
     justify-content: center;
     align-items: center;
-    gap: calc($grid-dimension/5.625);
+    gap: calc($grid-dimension/11.25);
+  }
+
+  .rotate-btn {
+    max-width: calc($grid-dimension/2);
   }
 
   .grid {
@@ -45,17 +49,42 @@ body {
 }
 
 h1,
-h2 {
+h2,
+.game-message {
   text-align: center;
+}
+
+.game-message {
+  margin-bottom: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .text-tertiary {
   color: $text-tertiary;
 }
 
+.btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  @include text-bg($text-primary, $bg-primary);
+  border: 1px solid $border-cell;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1.2rem;
+  transition: background-color 0.3s;
+
+  &:hover {
+    @include text-bg($text-secondary, $bg-secondary);
+  }
+}
+
 @include createGrid(288px);
 
-.computer-grid .cell {
+.computer-grid.enabled .cell {
   cursor: pointer;
 
   &:hover {
@@ -79,8 +108,13 @@ h2 {
     border-top: 1px solid $border-cell;
   }
 
-  &.ship {
+  &.ship,
+  &.preview {
     @include text-bg($text-secondary, $bg-secondary);
+  }
+
+  &.preview {
+    cursor: pointer;
   }
 
   &.hit,
@@ -104,29 +138,12 @@ h2 {
   &::backdrop {
     background-color: $bg-backdrop;
   }
+}
 
-  .game-over-message {
-    font-size: 1.5rem;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .restart-btn {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    @include text-bg($text-primary, $bg-primary);
-    border: 1px solid $border-cell;
-    outline: none;
-    cursor: pointer;
-    text-align: center;
-    font-size: 1.2rem;
-    transition: background-color 0.3s;
-
-    &:hover {
-      @include text-bg($text-secondary, $bg-secondary);
-    }
-  }
+.game-over-message {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 @media (min-width: 768px) {

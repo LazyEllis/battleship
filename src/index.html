@@ -7,11 +7,13 @@
   </head>
   <body>
     <h1>BATTLESHIP</h1>
+    <p class="game-message"></p>
     <div class="game">
       <div>
         <h2>PLAYER</h2>
-        <div class="player-grid grid"></div>
+        <div class="player-grid grid enabled"></div>
       </div>
+      <button class="btn rotate-btn" data-direction="vertical">ROTATE</button>
       <div>
         <h2 class="text-tertiary">COMPUTER</h2>
         <div class="computer-grid grid"></div>
@@ -19,7 +21,7 @@
     </div>
     <dialog class="game-over-modal">
       <div class="game-over-message"></div>
-      <button class="restart-btn">NEW GAME</button>
+      <button class="btn restart-btn">NEW GAME</button>
     </dialog>
   </body>
 </html>
