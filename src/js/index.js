@@ -23,27 +23,25 @@ const restartBtn = document.querySelector(".restart-btn");
 const humanPlayer = new Player("Player", new Gameboard());
 const computerPlayer = new Player("Computer", new Gameboard());
 
-const generateRandomCoordinate = () => {
-  const row = Math.floor(Math.random() * 10);
-  const column = Math.floor(Math.random() * 10);
-  return [row, column];
-};
+const generateRandomCoordinate = () => [
+  Math.floor(Math.random() * 10),
+  Math.floor(Math.random() * 10),
+];
 
 const generateRandomOrientation = () =>
   Math.random() < 0.5 ? "horizontal" : "vertical";
 
-const isCellHit = (player, coordinate) =>
-  player.gameboard.grid[coordinate[0]][coordinate[1]] === "hit";
+const isCellHit = (player, [row, col]) =>
+  player.gameboard.grid[row][col] === "hit";
 
-const isCellMissed = (player, coordinate) =>
-  player.gameboard.grid[coordinate[0]][coordinate[1]] === "miss";
+const isCellMissed = (player, [row, col]) =>
+  player.gameboard.grid[row][col] === "miss";
 
 const generateRandomValidCoordinate = (player) => {
-  let coordinate = generateRandomCoordinate();
-
-  while (isCellHit(player, coordinate) || isCellMissed(player, coordinate))
+  let coordinate;
+  do {
     coordinate = generateRandomCoordinate();
-
+  } while (isCellHit(player, coordinate) || isCellMissed(player, coordinate));
   return coordinate;
 };
 
@@ -54,15 +52,14 @@ const renderGrids = () => {
 
 const placeRandomShip = (ship, player) => {
   let placed = false;
-
   while (!placed) {
     try {
       const coordinate = generateRandomCoordinate();
       const direction = generateRandomOrientation();
       player.gameboard.placeShip(ship, coordinate, direction);
       placed = true;
-    } catch (error) {
-      // Error caught. This block intentionally left empty to retry placing the ship.
+    } catch {
+      // Retry placement
     }
   }
 };
@@ -85,8 +82,9 @@ const previewShip = (e) => {
   if (
     e.target.classList.contains("ship") ||
     !e.target.parentNode.classList.contains("enabled")
-  )
+  ) {
     return;
+  }
 
   if (e.target.classList.contains("cell")) {
     const { row, column } = e.target.dataset;
@@ -100,8 +98,9 @@ const placePlayerShip = (e) => {
   if (
     e.target.classList.contains("ship") ||
     !e.target.parentNode.classList.contains("enabled")
-  )
+  ) {
     return;
+  }
 
   if (e.target.classList.contains("cell")) {
     const { length } = gameMessage.dataset;
@@ -129,21 +128,13 @@ const changeGameStatus = (player, coordinate) => {
 const isGameOver = () => {
   if (humanPlayer.gameboard.isAllSunk()) {
     showGameOverModal("You Lose!");
-  }
-
-  if (computerPlayer.gameboard.isAllSunk()) {
+  } else if (computerPlayer.gameboard.isAllSunk()) {
     showGameOverModal("You Win!");
+  } else {
+    return false;
   }
-
-  if (
-    humanPlayer.gameboard.isAllSunk() ||
-    computerPlayer.gameboard.isAllSunk()
-  ) {
-    toggleGrids();
-    return true;
-  }
-
-  return false;
+  toggleGrids();
+  return true;
 };
 
 const hitPlayerCell = () => {
@@ -166,7 +157,7 @@ const hitComputerCell = (e) => {
     !e.target.classList.contains("hit")
   ) {
     const { row, column } = e.target.dataset;
-    const coordinate = [row, column];
+    const coordinate = [parseInt(row, 10), parseInt(column, 10)];
     changeGameStatus(computerPlayer, coordinate);
     if (isGameOver()) return;
     if (isCellMissed(computerPlayer, coordinate)) hitPlayerCell();

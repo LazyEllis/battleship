@@ -43,61 +43,61 @@ describe("Gameboard", () => {
     gameboard.placeShip(singleShip, [4, 4]);
     expect(() => {
       gameboard.placeShip(doubleShip, [4, 4], "vertical");
-    }).toThrow("Ships cannot overlap");
+    }).toThrow("Invalid ship placement");
   });
 
   test("throws an error when ship is placed out of bounds", () => {
     expect(() => {
       gameboard.placeShip(singleShip, [10, 10]);
-    }).toThrow("Ships cannot be placed out of bounds");
+    }).toThrow("Invalid ship placement");
   });
 
   test("does not allow ships to be placed out of bounds horizontally", () => {
     expect(() => {
       gameboard.placeShip(doubleShip, [9, 9], "horizontal");
-    }).toThrow("Ships cannot be placed out of bounds");
+    }).toThrow("Invalid ship placement");
   });
 
   test("does not allow ships to be placed out of bounds vertically", () => {
     expect(() => {
       gameboard.placeShip(doubleShip, [9, 9], "vertical");
-    }).toThrow("Ships cannot be placed out of bounds");
+    }).toThrow("Invalid ship placement");
   });
 
   test("does not allow ships to touch each other horizontally", () => {
     gameboard.placeShip(singleShip, [4, 4]);
     expect(() => {
       gameboard.placeShip(singleShip, [4, 3], "horizontal");
-    }).toThrow("Ships cannot touch each other");
+    }).toThrow("Invalid ship placement");
     expect(() => {
       gameboard.placeShip(singleShip, [4, 5], "horizontal");
-    }).toThrow("Ships cannot touch each other");
+    }).toThrow("Invalid ship placement");
   });
 
   test("does not allow ships to touch each other vertically", () => {
     gameboard.placeShip(singleShip, [4, 4]);
     expect(() => {
       gameboard.placeShip(singleShip, [3, 4]);
-    }).toThrow("Ships cannot touch each other");
+    }).toThrow("Invalid ship placement");
     expect(() => {
       gameboard.placeShip(singleShip, [5, 4]);
-    }).toThrow("Ships cannot touch each other");
+    }).toThrow("Invalid ship placement");
   });
 
   test("does not allow ships to touch each other diagonally", () => {
     gameboard.placeShip(singleShip, [4, 4]);
     expect(() => {
       gameboard.placeShip(singleShip, [3, 3]);
-    }).toThrow("Ships cannot touch each other");
+    }).toThrow("Invalid ship placement");
     expect(() => {
       gameboard.placeShip(singleShip, [5, 5]);
-    }).toThrow("Ships cannot touch each other");
+    }).toThrow("Invalid ship placement");
     expect(() => {
       gameboard.placeShip(singleShip, [3, 5]);
-    }).toThrow("Ships cannot touch each other");
+    }).toThrow("Invalid ship placement");
     expect(() => {
       gameboard.placeShip(singleShip, [5, 3]);
-    }).toThrow("Ships cannot touch each other");
+    }).toThrow("Invalid ship placement");
   });
 
   test("registers a hit when receiving an attack", () => {

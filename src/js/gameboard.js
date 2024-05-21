@@ -1,121 +1,71 @@
-const shipOutOfBounds = (coordinate) => {
-  if (
-    coordinate[0] < 0 ||
-    coordinate[0] > 9 ||
-    coordinate[1] < 0 ||
-    coordinate[1] > 9
-  ) {
-    throw new Error("Ships cannot be placed out of bounds");
-  }
-};
-
+const initializeGrid = () =>
+  Array.from({ length: 10 }, () => Array(10).fill(null));
 class Gameboard {
   constructor() {
-    this.#createGrid();
+    this.grid = initializeGrid();
+    this.ships = [];
   }
 
-  #grid;
-
-  #ships = [];
-
-  get grid() {
-    return this.#grid;
-  }
-
-  #createGrid() {
-    this.#grid = [];
-
-    for (let vertical = 0; vertical < 10; vertical += 1) {
-      const row = [];
-
-      for (let cell = 0; cell < 10; cell += 1) {
-        row.push(undefined);
+  placeShip(ship, [row, col], direction) {
+    if (this.#canPlaceShip(ship, [row, col], direction)) {
+      for (let i = 0; i < ship.length; i += 1) {
+        const [r, c] =
+          direction === "horizontal" ? [row, col + i] : [row + i, col];
+        this.grid[r][c] = ship;
       }
-
-      this.#grid.push(row);
+      this.ships.push(ship);
+    } else {
+      throw new Error("Invalid ship placement");
     }
   }
 
-  #shipOverlaps(coordinate) {
-    if (this.#grid[coordinate[0]][coordinate[1]] !== undefined)
-      throw new Error("Ships cannot overlap");
+  #canPlaceShip(ship, [row, col], direction) {
+    for (let i = 0; i < ship.length; i += 1) {
+      const [r, c] =
+        direction === "horizontal" ? [row, col + i] : [row + i, col];
+      if (
+        r >= 10 ||
+        c >= 10 ||
+        this.grid[r][c] ||
+        this.#hasAdjacentShips(r, c)
+      ) {
+        return false;
+      }
+    }
+    return true;
   }
 
-  #shipTouches(coordinate) {
-    const adjacentCoordinates = [
-      [coordinate[0] - 1, coordinate[1]],
-      [coordinate[0] + 1, coordinate[1]],
-      [coordinate[0], coordinate[1] - 1],
-      [coordinate[0], coordinate[1] + 1],
-      [coordinate[0] - 1, coordinate[1] - 1],
-      [coordinate[0] - 1, coordinate[1] + 1],
-      [coordinate[0] + 1, coordinate[1] - 1],
-      [coordinate[0] + 1, coordinate[1] + 1],
+  #hasAdjacentShips(row, col) {
+    const adjacentOffsets = [
+      [-1, -1],
+      [-1, 0],
+      [-1, 1],
+      [0, -1],
+      [0, 1],
+      [1, -1],
+      [1, 0],
+      [1, 1],
     ];
 
-    adjacentCoordinates.forEach((adjacentCoordinate) => {
-      if (
-        adjacentCoordinate[0] >= 0 &&
-        adjacentCoordinate[0] <= 9 &&
-        adjacentCoordinate[1] >= 0 &&
-        adjacentCoordinate[1] <= 9 &&
-        this.#grid[adjacentCoordinate[0]][adjacentCoordinate[1]] !== undefined
-      ) {
-        throw new Error("Ships cannot touch each other");
-      }
+    return adjacentOffsets.some(([dr, dc]) => {
+      const r = row + dr;
+      const c = col + dc;
+      return r >= 0 && r < 10 && c >= 0 && c < 10 && this.grid[r][c];
     });
   }
 
-  #positionIsValid(ship, coordinate, direction) {
-    if (ship.length === 1) {
-      shipOutOfBounds(coordinate);
-      this.#shipOverlaps(coordinate);
-      this.#shipTouches(coordinate);
-      return;
-    }
-
-    for (let index = 0; index < ship.length; index += 1) {
-      if (direction === "horizontal") {
-        shipOutOfBounds([coordinate[0], coordinate[1] + index]);
-        this.#shipOverlaps([coordinate[0], coordinate[1] + index]);
-        this.#shipTouches([coordinate[0], coordinate[1] + index]);
-      } else if (direction === "vertical") {
-        shipOutOfBounds([coordinate[0] + index, coordinate[1]]);
-        this.#shipOverlaps([coordinate[0] + index, coordinate[1]]);
-        this.#shipTouches([coordinate[0] + index, coordinate[1]]);
-      }
-    }
-  }
-
-  placeShip(ship, coordinate, direction = null) {
-    this.#positionIsValid(ship, coordinate, direction);
-    this.#ships.push(ship);
-
-    if (ship.length === 1) {
-      this.#grid[coordinate[0]][coordinate[1]] = ship;
-      return;
-    }
-
-    for (let index = 0; index < ship.length; index += 1) {
-      if (direction === "horizontal") {
-        this.#grid[coordinate[0]][coordinate[1] + index] = ship;
-      } else if (direction === "vertical") {
-        this.#grid[coordinate[0] + index][coordinate[1]] = ship;
-      }
-    }
-  }
-
-  receiveAttack(coordinate) {
-    if (this.#grid[coordinate[0]][coordinate[1]]) {
-      this.#grid[coordinate[0]][coordinate[1]].hit();
-      this.#grid[coordinate[0]][coordinate[1]] = "hit";
+  receiveAttack([row, col]) {
+    const cell = this.grid[row][col];
+    if (cell) {
+      cell.hit();
+      this.grid[row][col] = "hit";
     } else {
-      this.#grid[coordinate[0]][coordinate[1]] = "miss";
+      this.grid[row][col] = "miss";
     }
   }
 
   isAllSunk() {
-    return this.#ships.every((ship) => ship.isSunk());
+    return this.ships.every((ship) => ship.isSunk());
   }
 }
 
