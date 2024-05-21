@@ -8,12 +8,21 @@ const gameOverMessage = document.querySelector(".game-over-message");
 
 const shipLengths = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
 
+/**
+ * Clear all cells in the given grid.
+ * @param {HTMLElement} grid - The grid to clear.
+ */
 const clearGrid = (grid) => {
   while (grid.firstChild) {
     grid.removeChild(grid.firstChild);
   }
 };
 
+/**
+ * Get the ship placement message based on the ship length.
+ * @param {number} length - The length of the ship.
+ * @return {string} The ship placement message.
+ */
 const setShipMessage = (length) => {
   const messages = {
     4: "Place your Battleship",
@@ -24,6 +33,12 @@ const setShipMessage = (length) => {
   return messages[length] || "";
 };
 
+/**
+ * Set the cell type based on the player's ship and attack status.
+ * @param {Player} player - The player.
+ * @param {HTMLElement} cell - The cell element.
+ * @param {*} value - The value to set.
+ */
 const setCellType = (player, cell, value) => {
   if (player.name === "Player" && typeof value === "object" && value !== null) {
     cell.classList.add("ship");
@@ -34,10 +49,17 @@ const setCellType = (player, cell, value) => {
   }
 };
 
+/**
+ * Toggle the enabled class on all grids.
+ */
 export const toggleGrids = () => {
   grids.forEach((grid) => grid.classList.toggle("enabled"));
 };
 
+/**
+ * Render the gameboard grid for a player.
+ * @param {Player} player - The player whose grid to render.
+ */
 export const renderGrid = (player) => {
   const grid = player.name === "Player" ? playerGrid : computerGrid;
   clearGrid(grid);
@@ -54,6 +76,9 @@ export const renderGrid = (player) => {
   });
 };
 
+/**
+ * Show the game message for placing ships.
+ */
 const showGameMessage = () => {
   const { index } = gameMessage.dataset;
   gameMessage.dataset.length = shipLengths[+index];
@@ -61,27 +86,46 @@ const showGameMessage = () => {
   gameMessage.textContent = setShipMessage(+length);
 };
 
+/**
+ * Reset the game message to the initial state.
+ */
 export const resetGameMessage = () => {
   gameMessage.dataset.index = 0;
   showGameMessage();
 };
 
+/**
+ * Change the game message to the next ship to place.
+ */
 export const changeGameMessage = () => {
   const { index } = gameMessage.dataset;
   gameMessage.dataset.index = +index + 1;
   showGameMessage();
 };
 
+/**
+ * Change the ship placement direction.
+ */
 export const changeDirection = () => {
   rotateBtn.dataset.direction =
     rotateBtn.dataset.direction === "horizontal" ? "vertical" : "horizontal";
 };
 
+/**
+ * Show the game over modal with a message.
+ * @param {string} message - The game over message.
+ */
 export const showGameOverModal = (message) => {
   gameOverMessage.textContent = message;
   gameOverModal.showModal();
 };
 
+/**
+ * Check if there are adjacent ships to the given cell.
+ * @param {number} row - The row of the cell.
+ * @param {number} col - The column of the cell.
+ * @return {boolean} True if there are adjacent ships, otherwise false.
+ */
 const hasAdjacentShips = (row, col) => {
   const adjacentOffsets = [
     [-1, -1],
@@ -104,6 +148,13 @@ const hasAdjacentShips = (row, col) => {
   });
 };
 
+/**
+ * Highlight the cells for ship placement preview.
+ * @param {number} row - The starting row.
+ * @param {number} column - The starting column.
+ * @param {number} length - The length of the ship.
+ * @param {string} direction - The direction of the ship ('horizontal' or 'vertical').
+ */
 export const highlightShip = (row, column, length, direction) => {
   const cellsToHighlight = [];
   let isValid = true;
@@ -129,12 +180,18 @@ export const highlightShip = (row, column, length, direction) => {
   }
 };
 
+/**
+ * Remove the preview class from all previewed cells.
+ */
 export const removePreview = () => {
   document
     .querySelectorAll(".preview")
     .forEach((preview) => preview.classList.remove("preview"));
 };
 
+/**
+ * Hide the game over modal.
+ */
 export const hideGameOverModal = () => {
   gameOverModal.close();
 };
