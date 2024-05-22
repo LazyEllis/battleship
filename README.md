@@ -7,7 +7,6 @@ Welcome to the Battleship Game! This project is a web-based implementation of th
 - [Features](#features)
 - [Setup](#setup)
 - [Usage](#usage)
-- [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -26,7 +25,7 @@ To run this project locally, follow these steps:
 
    ```bash
    git clone https://github.com/LazyEllis/battleship.git
-   cd battleship-game
+   cd battleship
    ```
 
 2. **Install dependencies**:
