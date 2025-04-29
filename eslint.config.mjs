@@ -1,5 +1,4 @@
 import globals from "globals";
-
 import path from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
@@ -31,8 +30,18 @@ export default [
   },
   {
     rules: {
-      "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
-      "no-underscore-dangle": ["error", { allow: ["__filename", "__dirname"] }],
+      "import/no-extraneous-dependencies": [
+        "error",
+        {
+          devDependencies: ["webpack.*.js", "*.config.mjs"],
+        },
+      ],
+    },
+  },
+  {
+    files: ["eslint.config.mjs"],
+    rules: {
+      "no-underscore-dangle": "off",
     },
   },
   eslintConfigPrettier,
