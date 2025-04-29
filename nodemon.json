@@ -1,7 +1,0 @@
-{
-  "watch": ["webpack.*.js", "src"],
-  "ext": "js,json,scss,css,html,",
-  "execMap": {
-    "js": "webpack --config"
-  }
-}
